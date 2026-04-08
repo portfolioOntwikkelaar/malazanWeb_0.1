@@ -1,0 +1,206 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 900px;
+                 background-color: #0b0b0b;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                 nodes = new vis.DataSet([
+
+  // =========================
+  // MALAZAN EMPIRE
+  // =========================
+  {"id":"Kellanved","label":"Kellanved","group":"Ascendant","shape":"dot","size":30,"font":{"color":"white"},"title":"Emperor Kellanved"},
+  {"id":"Dancer","label":"Dancer","group":"Ascendant","shape":"dot","size":28,"font":{"color":"white"},"title":"Dancer"},
+  {"id":"Surly","label":"Surly","group":"Malazan","shape":"dot","size":26,"font":{"color":"white"},"title":"Surly / Laseen"},
+  {"id":"Tayschrenn","label":"Tayschrenn","group":"Malazan","shape":"dot","size":24,"font":{"color":"white"},"title":"High Mage"},
+  {"id":"Dassem Ultor","label":"Dassem Ultor","group":"Malazan","shape":"dot","size":28,"font":{"color":"white"},"title":"First Sword"},
+  
+  // =========================
+  // GUARD / SOLDIERS
+  // =========================
+  {"id":"Temper","label":"Temper","group":"Guard","shape":"dot","size":24,"font":{"color":"white"},"title":"Veteran Guard"},
+  {"id":"Ferrule","label":"Ferrule","group":"Guard","shape":"dot","size":18,"font":{"color":"white"},"title":"Guard commander"},
+
+  // =========================
+  // KISKA / CITY
+  // =========================
+  {"id":"Kiska","label":"Kiska","group":"Civilian","shape":"dot","size":22,"font":{"color":"white"},"title":"Thief"},
+  {"id":"Agayla","label":"Agayla","group":"Mage","shape":"dot","size":20,"font":{"color":"white"},"title":"Old Mage"},
+  {"id":"Artan","label":"Artan","group":"Civilian","shape":"dot","size":18,"font":{"color":"white"},"title":"Dock worker"},
+
+  // =========================
+  // CLAW
+  // =========================
+  {"id":"Hattar","label":"Hattar","group":"Claw","shape":"dot","size":22,"font":{"color":"white"},"title":"Claw agent"},
+  {"id":"Possum","label":"Possum","group":"Claw","shape":"dot","size":20,"font":{"color":"white"},"title":"Claw commander"},
+
+  // =========================
+  // ASCENDANTS / SHADOW
+  // =========================
+  {"id":"Shadowthrone","label":"Shadowthrone","group":"Ascendant","shape":"dot","size":36,"font":{"color":"white"},"title":"Ascendant"},
+  {"id":"Cotillion","label":"Cotillion","group":"Ascendant","shape":"dot","size":34,"font":{"color":"white"},"title":"Ascendant"}
+
+]);
+
+
+edges = new vis.DataSet([
+
+  // Emperor circle
+  {"from":"Kellanved","to":"Dancer","color":"green","title":"partners"},
+  {"from":"Kellanved","to":"Surly","color":"red","title":"machtsovername"},
+  {"from":"Surly","to":"Kellanved","color":"red","title":"verraad"},
+
+  // Ascension
+  {"from":"Kellanved","to":"Shadowthrone","color":"gray","title":"ascension"},
+  {"from":"Dancer","to":"Cotillion","color":"gray","title":"ascension"},
+  {"from":"Shadowthrone","to":"Cotillion","color":"green","title":"bondgenoten"},
+
+  // Malazan command
+  {"from":"Dassem Ultor","to":"Kellanved","color":"green","title":"First Sword"},
+  {"from":"Tayschrenn","to":"Surly","color":"green","title":"loyaliteit"},
+  {"from":"Tayschrenn","to":"Kellanved","color":"gray","title":"twijfel"},
+
+  // Guard storyline
+  {"from":"Temper","to":"Dassem Ultor","color":"green","title":"loyaliteit"},
+  {"from":"Temper","to":"Ferrule","color":"green","title":"guard"},
+  {"from":"Temper","to":"Kellanved","color":"gray","title":"protectie"},
+
+  // Kiska storyline
+  {"from":"Kiska","to":"Agayla","color":"green","title":"mentor"},
+  {"from":"Kiska","to":"Artan","color":"green","title":"bondgenoten"},
+  {"from":"Kiska","to":"Hattar","color":"red","title":"achtervolging"},
+
+  // Claw
+  {"from":"Surly","to":"Possum","color":"green","title":"Claw command"},
+  {"from":"Possum","to":"Hattar","color":"green","title":"Claw agent"},
+  {"from":"Hattar","to":"Kellanved","color":"red","title":"assassination plot"},
+
+  // Power struggle
+  {"from":"Surly","to":"Dassem Ultor","color":"red","title":"politieke spanning"},
+  {"from":"Tayschrenn","to":"Dassem Ultor","color":"gray","title":"wantrouwen"},
+
+  // Shadow influence
+  {"from":"Shadowthrone","to":"Surly","color":"gray","title":"lange termijn conflict"},
+  {"from":"Cotillion","to":"Kiska","color":"gray","title":"interesse"}
+
+]);
+
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"enabled": true, "barnesHut": {"gravitationalConstant": -6000, "centralGravity": 0.15, "springLength": 160, "springConstant": 0.04, "damping": 0.12}}, "nodes": {"borderWidth": 1, "shadow": true, "font": {"size": 14}}, "edges": {"smooth": false, "shadow": false}, "interaction": {"hover": true, "tooltipDelay": 100}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
